@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Custom Journey Builder Activity</title>
+    <link rel="stylesheet" type="text/css" href="/mkt/css/datatables.min.css" />
+    <script type="text/javascript" src="/mkt/js/datatables.min.js"></script>
+</head>
+
+<body>
+    <h4 class="text-center" style="margin-top:60px;">
+        机会点每日推送数据
+    </h4>
+    <div class="container">
+        <div class="table-responsive row justify-content-sm-center">
+            <table id="dataTable" class="table table-bordered table-hover table-sm">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col">机会点ID</th>
+                        <th scope="col">机会点名称</th>
+                        <th scope="col">日期</th>
+                        <th scope="col">数量</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <script type="text/javascript">
+        // https://datatables.net
+        
+        $(function () {
+            $('#dataTable').dataTable({
+                "serverSide": false,
+                "ajax": function (data, callback, settings) {
+                    console.log(data);
+                    console.log(settings);
+                    $.ajax("/api/chanceSummary/list", {
+                        method: "POST",
+                        data: data
+                    }).done(function (data, textStatus, jqXHR) {
+                        console.log(data);
+                        callback({ data: data });
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        console.log(errorThrown);
+                    });/*
+                    callback(
+                        {
+                            "draw": 1,
+                            "recordsTotal": 1,
+                            "recordsFiltered": 1,
+                            "data": [
+                                {
+                                    "chanceId": "test1",
+                                    "chanceName": "测试机会点",
+                                    "date": "2018-11-11",
+                                    "amount": "100"
+                                }]
+                        }
+                    );*/
+                },
+                "scrollY": "450px",
+                "scrollCollapse": false,
+                "processing": true,
+                "searching": true,
+                "ordering": true,
+                "paging": true,
+                "select": true,
+                "autoWidth": false,
+                //"dom": '<"top left"if>rt<"bottom"lp><"clear">',
+                "columns": [
+                    {
+                        "name": "机会点ID",
+                        "title": "机会点ID",
+                        "data": "chanceId",
+                        "type": "string",
+                        "defaultContent": "<i> -- </i>",
+                        "searchable": true,
+                        "orderable": true,
+                        "orderSequence": ["desc", "asc"],
+                        "width": "45px"
+                    },
+                    {
+                        "name": "机会点名称",
+                        "title": "机会点名称",
+                        "data": "chanceName",
+                        "type": "string",
+                        "defaultContent": "<i> -- </i>",
+                        "searchable": true,
+                        "orderable": true,
+                        "orderSequence": ["desc", "asc"],
+                        "width": "160px"
+                    },
+                    {
+                        "name": "日期",
+                        "title": "日期",
+                        "data": "date",
+                        "type": "string",
+                        "defaultContent": "<i> -- </i>",
+                        "searchable": true,
+                        "orderable": true,
+                        "orderSequence": ["desc", "asc"],
+                        "width": "45px"
+                    },
+                    {
+                        "name": "数量",
+                        "title": "数量",
+                        "data": "amount",
+                        "type": "num",
+                        "defaultContent": "<i> 0 </i>",
+                        "searchable": false,
+                        "orderable": true,
+                        "orderSequence": ["desc", "asc"],
+                        "width": "45px"
+                    }
+                ]
+            });
+        });
+    </script>
+</body>
+
+</html>
